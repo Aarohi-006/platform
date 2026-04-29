@@ -1,222 +1,72 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Micro-Local Knowledge</title>
-
-<style>
-body {
-  font-family: Helvetica, Arial, sans-serif;
-  margin: 0;
-  background: #efe8d0;
-}
-
-.container {
-  width: 320px;
-  margin: 20px auto;
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.header {
-  padding: 10px;
-  background: #ddd;
-  display: flex;
-  justify-content: space-between;
-}
-
-.map {
-  position: relative;
-  height: 300px;
-  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Union_Square_Map.png/640px-Union_Square_Map.png') center/cover;
-}
-
-/* floating tips */
-.tip {
-  position: absolute;
-  background: #ffe08a;
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* UC marker */
-.uc {
-  position: absolute;
-  top: 120px;
-  left: 130px;
-  width: 40px;
-  height: 40px;
-  background: red;
-  border-radius: 50%;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* building view */
-.building {
-  display: none;
-  position: relative;
-  height: 300px;
-  background: #f4f4f4;
-}
-
-.floor-tip {
-  position: absolute;
-  background: #aee1f9;
-  padding: 5px 8px;
-  border-radius: 8px;
-  font-size: 11px;
-}
-
-/* bottom nav */
-.nav {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  background: #8cc7c3;
-}
-
-.nav button {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-/* modal */
-.modal {
-  display: none;
-  position: absolute;
-  top: 50px;
-  left: 20px;
-  width: 280px;
-  background: white;
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-}
-
-input, select {
-  width: 100%;
-  margin: 5px 0;
-  padding: 5px;
-}
-
-button.primary {
-  background: gold;
-  border: none;
-  padding: 10px;
-  width: 100%;
-  border-radius: 10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micro-Local Knowledge</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="app">
 
-<div class="container">
+    <div class="header">THE NEW SCHOOL CAMPUS</div>
 
-  <div class="header">
-    <span>Search</span>
-    <span>Filter</span>
-  </div>
+    <!-- HOME -->
+    <div class="screen active" id="homeScreen">
+      <div class="map">
+        <div class="hotspot copa-zone" onclick="openBuilding('copa')"></div>
+        <div class="hotspot lang-zone" onclick="openBuilding('lang')"></div>
+        <div class="hotspot uc-zone" onclick="openBuilding('uc')"></div>
+        <div class="hotspot nssr-zone" onclick="openBuilding('nssr')"></div>
+        <div class="hotspot parsons-zone" onclick="openBuilding('parsons')"></div>
+        <div id="tips-container"></div>
+      </div>
 
-  <!-- CAMPUS MAP -->
-  <div class="map" id="map">
-
-    <div class="tip" style="top:40px; left:40px;">
-      Free pizza (10 min)
+      <div class="filters">
+        <button class="filter f-all" onclick="filterTips('all')">All</button>
+        <button class="filter f-lang" onclick="filterTips('lang')">Lang</button>
+        <button class="filter f-parsons" onclick="filterTips('parsons')">Parsons</button>
+        <button class="filter f-uc" onclick="filterTips('uc')">UC</button>
+        <button class="filter f-copa" onclick="filterTips('copa')">CoPA</button>
+        <button class="filter f-nssr" onclick="filterTips('nssr')">NSSR</button>
+      </div>
     </div>
 
-    <div class="tip" style="top:200px; left:60px;">
-      Quiet study (Lang)
+    <!-- BUILDING -->
+    <div class="screen building" id="buildingScreen">
+      <button class="back-btn" onclick="showHome()">← Back</button>
+      <div id="buildingTitle" class="building-title"></div>
+      <div id="floorList"></div>
+      <div id="arena-content"></div>
     </div>
 
-    <!-- UC clickable -->
-    <div class="uc" onclick="openBuilding()">UC</div>
-
-  </div>
-
-  <!-- BUILDING VIEW -->
-  <div class="building" id="building">
-
-    <div class="floor-tip" style="top:60px; left:100px;">
-      Pizza - 2nd floor
+    <!-- FEED -->
+    <div class="screen feed" id="feedScreen">
+      <div id="feed-list"></div>
     </div>
 
-    <div class="floor-tip" style="top:150px; left:120px;">
-      Elevator broken
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+      <h3>Add Tip</h3>
+      <input id="tipText" placeholder="What's happening?" />
+      <select id="tipSchool">
+        <option value="uc">UC</option>
+        <option value="lang">Lang</option>
+        <option value="parsons">Parsons</option>
+        <option value="copa">CoPA</option>
+        <option value="nssr">NSSR</option>
+      </select>
+      <button onclick="addTip()">Post</button>
     </div>
 
-    <button onclick="backToMap()" style="position:absolute; top:10px; left:10px;">
-      ← Back
-    </button>
-
+    <div class="nav">
+      <div onclick="showHome()">Map</div>
+      <div onclick="openModal()">＋</div>
+      <div onclick="showFeed()">Feed</div>
+    </div>
   </div>
 
-  <!-- ADD TIP MODAL -->
-  <div class="modal" id="modal">
-
-    <h4>Add Tip</h4>
-
-    <select>
-      <option>Parsons</option>
-      <option>Lang</option>
-      <option>CoPA</option>
-      <option>NSSR</option>
-    </select>
-
-    <input placeholder="What's happening?">
-
-    <select>
-      <option>Food</option>
-      <option>Space</option>
-      <option>Warning</option>
-    </select>
-
-    <button class="primary" onclick="closeModal()">POST</button>
-
-  </div>
-
-  <!-- NAV -->
-  <div class="nav">
-    <button onclick="showMap()">Map</button>
-    <button onclick="openModal()">＋</button>
-    <button>Profile</button>
-  </div>
-
-</div>
-
-<script>
-function openBuilding() {
-  document.getElementById("map").style.display = "none";
-  document.getElementById("building").style.display = "block";
-}
-
-function backToMap() {
-  document.getElementById("map").style.display = "block";
-  document.getElementById("building").style.display = "none";
-}
-
-function openModal() {
-  document.getElementById("modal").style.display = "block";
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-function showMap() {
-  backToMap();
-}
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
