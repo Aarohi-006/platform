@@ -1,1 +1,195 @@
+/* style.css */
+* { box-sizing: border-box; }
 
+body {
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  background: #000;
+}
+
+.app {
+  max-width: 420px;
+  margin: auto;
+  min-height: 100vh;
+  background: #f5f0dc;
+  padding-bottom: 90px;
+}
+
+.header {
+  text-align: center;
+  padding: 22px 16px;
+  font-weight: bold;
+  background: #e3d8a8;
+  margin: 14px;
+  border-radius: 20px;
+  color: #111;
+  font-size: 18px;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.map {
+  position: relative;
+  height: 720px;
+  margin: 0 14px;
+  border-radius: 22px;
+  background: url('map.png') center top / contain no-repeat;
+  background-color: #efefef;
+  overflow: hidden;
+}
+
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 18px;
+  z-index: 2;
+}
+
+.copa-zone { top: 0; left: 0; width: 190px; height: 180px; }
+.lang-zone { top: 0; right: 0; width: 170px; height: 180px; }
+.uc-zone { top: 180px; left: 105px; width: 210px; height: 250px; }
+.nssr-zone { bottom: 0; left: 0; width: 190px; height: 210px; }
+.parsons-zone { bottom: 0; right: 0; width: 200px; height: 210px; }
+
+.tip {
+  position: absolute;
+  background: #f6d97b;
+  padding: 8px 12px;
+  border-radius: 18px;
+  font-size: 11px;
+  max-width: 130px;
+  z-index: 3;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.filter {
+  padding: 10px 14px;
+  border-radius: 24px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: bold;
+  border: none;
+}
+
+.f-all { background:#999; }
+.f-lang { background:#6cc4d4; }
+.f-parsons { background:#e59b64; }
+.f-uc { background:red; }
+.f-copa { background:#9b4de3; }
+.f-nssr { background:#3fb34f; }
+
+.feed, .building {
+  padding: 20px;
+}
+
+.feed p, .arena-card {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.floor {
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #111;
+}
+
+.building-title {
+  padding: 14px;
+  border-radius: 14px;
+  color: white;
+  font-weight: bold;
+  margin: 10px 0 14px;
+}
+
+.floor.uc { background: #ffd6d6; }
+.floor.parsons { background: #ffe2cf; }
+.floor.lang { background: #dff5f8; }
+.floor.nssr { background: #dff3e2; }
+.floor.copa { background: #efe1ff; }
+
+.title-uc { background: red; }
+.title-parsons { background: #e59b64; }
+.title-lang { background: #6cc4d4; }
+.title-nssr { background: #3fb34f; }
+.title-copa { background: #9b4de3; }
+
+.arena-card img,
+.arena-card iframe {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: none;
+}
+
+.arena-card a {
+  display: block;
+  margin-top: 8px;
+  color: #111;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.back-btn {
+  border: none;
+  background: #e9d9a8;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.modal {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 20px;
+  transition: 0.3s;
+  border-radius: 16px 16px 0 0;
+  z-index: 99;
+}
+
+.modal.active { bottom: 0; }
+
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  background: #8cc7c3;
+  display: flex;
+  justify-content: space-around;
+  padding: 14px;
+  font-weight: bold;
+  z-index: 100;
+}
