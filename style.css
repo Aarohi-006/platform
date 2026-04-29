@@ -5,6 +5,10 @@ body {
   margin: 0;
   font-family: Neue Display Random, sans-serif;
   background: #000;
+  @media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: url('mascot.png') 12 12, auto;
+  }
 }
 
 .app {
