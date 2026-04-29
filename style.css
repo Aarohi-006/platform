@@ -197,3 +197,20 @@ button {
   font-weight: bold;
   z-index: 100;
 }
+
+  /* Add this at the END of style.css */
+
+/* mascot cursor (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  html, body,
+  .app,
+  .map,
+  .hotspot,
+  .filter,
+  button,
+  a,
+  input,
+  select {
+    cursor: url("./mascot.png") 18 18, auto !important;
+  }
+}
