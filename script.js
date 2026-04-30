@@ -126,7 +126,7 @@ async function loadArena(building) {
 
     container.innerHTML = "";
 
-    items.slice(0, 3).forEach(block => {
+    items.slice(0, 5).forEach(block => {
       const card = document.createElement("div");
       card.className = "arena-card";
 
@@ -160,9 +160,11 @@ async function loadArena(building) {
         card.appendChild(text);
       }
 
-      if (block.source?.url) {
+      const linkUrl = block.source?.url || block.url;
+
+      if (linkUrl) {
         const link = document.createElement("a");
-        link.href = block.source.url;
+        link.href = linkUrl;
         link.target = "_blank";
         link.innerText = "Open Link";
         card.appendChild(link);
