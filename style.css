@@ -1,5 +1,6 @@
-/* style.css */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -26,15 +27,20 @@ body {
   text-align: center;
   padding: 18px 16px;
   font-weight: bold;
+  font-size: 18px;
   background: #e3d8a8;
+  color: #111;
   margin: 10px 14px;
   border-radius: 20px;
-  color: #111;
-  font-size: 18px;
 }
 
-.screen { display: none; }
-.screen.active { display: block; }
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
 
 .mascot-guide {
   display: flex;
@@ -47,7 +53,7 @@ body {
 }
 
 .mascot-guide img {
-  width: 58px;
+  width: 78px;
   height: auto;
   flex-shrink: 0;
 }
@@ -66,7 +72,7 @@ body {
   height: 560px;
   margin: 0 14px;
   border-radius: 22px;
-  background: url('map.png') center top / contain no-repeat;
+  background: url("map.png") center top / contain no-repeat;
   background-color: #efefef;
   overflow: hidden;
 }
@@ -74,7 +80,6 @@ body {
 .hotspot {
   position: absolute;
   cursor: pointer;
-  border-radius: 18px;
   z-index: 2;
 }
 
@@ -104,28 +109,28 @@ body {
 .filter {
   width: 100%;
   padding: 10px 8px;
+  border: none;
   border-radius: 24px;
   color: white;
   font-size: 11px;
-  cursor: pointer;
-  white-space: nowrap;
   font-weight: bold;
-  border: none;
-  text-align: center;
+  cursor: pointer;
 }
 
-.f-all { background:#999; }
-.f-lang { background:#6cc4d4; }
-.f-parsons { background:#e59b64; }
-.f-uc { background:red; }
-.f-copa { background:#9b4de3; }
-.f-nssr { background:#3fb34f; }
+.f-all { background: #999; }
+.f-lang { background: #6cc4d4; }
+.f-parsons { background: #e59b64; }
+.f-uc { background: red; }
+.f-copa { background: #9b4de3; }
+.f-nssr { background: #3fb34f; }
 
-.feed, .building {
+.feed,
+.building {
   padding: 20px;
 }
 
-.feed p, .arena-card {
+.feed p,
+.arena-card {
   background: white;
   padding: 10px;
   border-radius: 10px;
@@ -138,7 +143,18 @@ body {
   border-radius: 12px;
   margin-bottom: 8px;
   font-size: 13px;
-  color: #111;
+}
+
+.floor.uc { background: #ffd6d6; }
+.floor.parsons { background: #ffe2cf; }
+.floor.lang { background: #dff5f8; }
+.floor.nssr { background: #dff3e2; }
+.floor.copa { background: #efe1ff; }
+
+.floor.active-tip {
+  border: 2px solid #111;
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.35);
+  font-weight: bold;
 }
 
 .building-title {
@@ -149,32 +165,16 @@ body {
   margin: 10px 0 14px;
 }
 
-.floor.uc { background: #ffd6d6; }
-.floor.parsons { background: #ffe2cf; }
-.floor.lang { background: #dff5f8; }
-.floor.nssr { background: #dff3e2; }
-.floor.copa { background: #efe1ff; }
-
 .title-uc { background: red; }
 .title-parsons { background: #e59b64; }
 .title-lang { background: #6cc4d4; }
 .title-nssr { background: #3fb34f; }
 .title-copa { background: #9b4de3; }
 
-.arena-card img,
-.arena-card iframe {
+.arena-card img {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 8px;
-  border: none;
-}
-
-.arena-card a {
-  display: block;
-  margin-top: 8px;
-  color: #111;
-  font-weight: bold;
-  text-decoration: underline;
 }
 
 .back-btn {
@@ -185,8 +185,6 @@ body {
   font-weight: bold;
 }
 
-/* Replace only .modal in style.css */
-
 .modal {
   position: fixed;
   bottom: -100%;
@@ -195,26 +193,25 @@ body {
   width: 100%;
   max-width: 460px;
   background: white;
-  padding: 20px 20px 110px; /* extra bottom space so button clears nav */
+  padding: 20px 20px 110px;
   transition: 0.3s;
   border-radius: 16px 16px 0 0;
   z-index: 99;
 }
 
-.modal.active { bottom: 0; }
+.modal.active {
+  bottom: 0;
+}
 
-input, select, button {
+input,
+select,
+button {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
   font-size: 14px;
   border-radius: 10px;
   border: 1px solid #ddd;
-}
-
-button {
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .nav {
@@ -229,6 +226,6 @@ button {
   justify-content: space-around;
   padding: 12px;
   font-weight: bold;
-  z-index: 100;
   border-radius: 20px;
+  z-index: 100;
 }
