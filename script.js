@@ -7,11 +7,11 @@ let tips = [
 let currentFilter = "all";
 
 const arenaChannels = {
-  uc: "https://api.allorigins.win/raw?url=https://api.are.na/v3/channels/uc-npghtqxz8wi/contents",
-  parsons: "https://api.allorigins.win/raw?url=https://api.are.na/v3/channels/parsons-vs1m3z46yw8/contents",
-  lang: "https://api.allorigins.win/raw?url=https://api.are.na/v3/channels/lang-eps6ergks48/contents",
-  nssr: "https://api.allorigins.win/raw?url=https://api.are.na/v3/channels/nssr-uvl_ripsnjg/contents",
-  copa: "https://api.allorigins.win/raw?url=https://api.are.na/v3/channels/copa-1_xx1whfvcc/contents"
+  uc: "https://api.are.na/v3/channels/uc-npghtqxz8wi/contents",
+  parsons: "https://api.are.na/v3/channels/parsons-vs1m3z46yw8/contents",
+  lang: "https://api.are.na/v3/channels/lang-eps6ergks48/contents",
+  nssr: "https://api.are.na/v3/channels/nssr-uvl_ripsnjg/contents",
+  copa: "https://api.are.na/v3/channels/copa-1_xx1whfvcc/contents"
 };
 
 const floors = {
@@ -37,6 +37,8 @@ function renderTips() {
   const container = document.getElementById("tips-container");
   const feed = document.getElementById("feed-list");
 
+  if (!container || !feed) return;
+
   container.innerHTML = "";
   feed.innerHTML = "";
 
@@ -46,11 +48,12 @@ function renderTips() {
     if (currentFilter !== "all" && item.school !== currentFilter) return;
 
     const pos = getPosition(item.school);
+    if (!pos) return;
 
     const tipEl = document.createElement("div");
     tipEl.className = "tip";
     tipEl.textContent = item.tip;
-    tipEl.style.top = pos.top + stackCount[item.school] * 38 + "px";
+    tipEl.style.top = (pos.top + stackCount[item.school] * 38) + "px";
     tipEl.style.left = pos.left + "px";
     stackCount[item.school]++;
     container.appendChild(tipEl);
@@ -74,13 +77,15 @@ function filterTips(school) {
     copa: "Performance and rehearsal updates."
   };
 
-  bubble.textContent = messages[school];
+  if (bubble) {
+    bubble.textContent = messages[school] || messages.all;
+  }
+
   renderTips();
 }
 
 function openBuilding(building) {
-  const screens = document.querySelectorAll(".screen");
-  screens.forEach(function(screen) {
+  document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
   });
 
@@ -114,15 +119,29 @@ function openBuilding(building) {
     floorList.appendChild(floorCard);
   });
 
- async function loadArena(building) {
+  loadArena(building);
+}
+
+function updateFloorOptions() {
+  const school = document.getElementById("tipSchool").value;
+  const floorSelect = document.getElementById("tipFloor");
+  floorSelect.innerHTML = "";
+
+  floors[school].forEach(function(floor) {
+    const option = document.createElement("option");
+    option.value = floor.split(" ")[0];
+    option.textContent = "Floor " + floor.split(" ")[0];
+    floorSelect.appendChild(option);
+  });
+}
+
+async function loadArena(building) {
   const container = document.getElementById("arena-content");
   container.innerHTML = "Loading references...";
 
   try {
     const response = await fetch(arenaChannels[building]);
     const data = await response.json();
-
-    // Are.na can return blocks in different keys depending on endpoint
     const items = data.contents || data.items || data.data || [];
 
     container.innerHTML = "";
@@ -136,11 +155,10 @@ function openBuilding(building) {
       const card = document.createElement("div");
       card.className = "arena-card";
 
-      // image
       const imageUrl =
-        block.image?.display?.url ||
-        block.image?.original?.url ||
-        block.attachment?.url;
+        (block.image && block.image.display && block.image.display.url) ||
+        (block.image && block.image.original && block.image.original.url) ||
+        (block.attachment && block.attachment.url);
 
       if (imageUrl) {
         const img = document.createElement("img");
@@ -148,8 +166,7 @@ function openBuilding(building) {
         card.appendChild(img);
       }
 
-      // embed
-      if (block.embed?.url) {
+      if (block.embed && block.embed.url) {
         const frame = document.createElement("iframe");
         frame.src = block.embed.url;
         frame.width = "100%";
@@ -160,29 +177,26 @@ function openBuilding(building) {
         card.appendChild(frame);
       }
 
-      // title
       const title = document.createElement("div");
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
       title.textContent =
         block.title ||
         block.generated_title ||
-        block.source?.title ||
+        (block.source && block.source.title) ||
         "Untitled";
       card.appendChild(title);
 
-      // text
       if (block.content) {
         const text = document.createElement("p");
         text.textContent = block.content;
         card.appendChild(text);
       }
 
-      // links
       const linkUrl =
-        block.source?.url ||
+        (block.source && block.source.url) ||
         block.url ||
-        block.embed?.url;
+        (block.embed && block.embed.url);
 
       if (linkUrl) {
         const link = document.createElement("a");
@@ -209,7 +223,12 @@ function showHome() {
   });
 
   document.getElementById("homeScreen").classList.add("active");
-  document.querySelector(".bubble").textContent = "Tap a building to explore live campus notes.";
+
+  const bubble = document.querySelector(".bubble");
+  if (bubble) {
+    bubble.textContent = "Tap a building to explore live campus notes.";
+  }
+
   renderTips();
 }
 
