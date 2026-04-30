@@ -27,47 +27,46 @@ const floors = {
 
 function getPosition(school) {
   return {
-    copa: { top: 120, left: 45 },
-    lang: { top: 120, left: 270 },
-    uc: { top: 360, left: 165 },
-    nssr: { top: 585, left: 45 },
-    parsons: { top: 585, left: 255 }
+    copa: { top: 90, left: 35 },
+    lang: { top: 90, left: 290 },
+    uc: { top: 280, left: 170 },
+    nssr: { top: 455, left: 35 },
+    parsons: { top: 455, left: 270 }
   }[school];
 }
 
 function renderTips() {
   const container = document.getElementById("tips-container");
   const feed = document.getElementById("feed-list");
+  if (!container || !feed) return;
+
   container.innerHTML = "";
   feed.innerHTML = "";
 
-  const stackCount = {
-    uc: 0,
-    lang: 0,
-    parsons: 0,
-    nssr: 0,
-    copa: 0
-  };
+  const stackCount = { uc: 0, lang: 0, parsons: 0, nssr: 0, copa: 0 };
 
   tips.forEach(t => {
     if (currentFilter !== "all" && t.school !== currentFilter) return;
 
     const pos = getPosition(t.school);
+
+    // map tip
     if (pos) {
       const div = document.createElement("div");
       div.className = "tip";
-      div.innerText = t.tip;
+      div.textContent = t.tip;
 
-      const offset = stackCount[t.school] * 34;
-      div.style.top = (pos.top + offset) + "px";
-      div.style.left = pos.left + "px";
+      const offset = stackCount[t.school] * 38;
+      div.style.top = `${pos.top + offset}px`;
+      div.style.left = `${pos.left}px`;
 
       stackCount[t.school]++;
       container.appendChild(div);
     }
 
+    // live feed item
     const p = document.createElement("p");
-    p.innerText = `${t.tip} (${t.time})`;
+    p.textContent = `${t.tip} (${t.time})`;
     feed.appendChild(p);
   });
 }
@@ -162,6 +161,7 @@ async function loadArena(building) {
 function showHome() {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById("homeScreen").classList.add("active");
+  renderTips();
 }
 
 function showFeed() {
@@ -181,6 +181,7 @@ function closeModal() {
 function addTip() {
   const text = document.getElementById("tipText").value.trim();
   const school = document.getElementById("tipSchool").value;
+
   if (!text) return;
 
   tips.unshift({
@@ -191,7 +192,7 @@ function addTip() {
 
   document.getElementById("tipText").value = "";
   closeModal();
-  renderTips();
+  showHome();   // important: returns to map and re-renders tips
 }
 
 renderTips();
