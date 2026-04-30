@@ -58,7 +58,7 @@ body {
 
 .map {
   position: relative;
-  height: 500px;
+  height: 460px;
   margin: 0 14px;
   border-radius: 22px;
   background: url('map.png') center top / contain no-repeat;
