@@ -4,14 +4,21 @@
 body {
   margin: 0;
   font-family: Neue Display Random, sans-serif;
-  background: #000;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
 }
 
 .app {
+  width: 100%;
   max-width: 460px;
-  margin: auto;
   min-height: 100vh;
   background: #f5f0dc;
+  border: 10px solid #111;
+  border-radius: 38px;
+  overflow: hidden;
+  position: relative;
   padding-bottom: 90px;
 }
 
@@ -181,7 +188,8 @@ body {
 .modal {
   position: fixed;
   bottom: -100%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: 460px;
   background: white;
@@ -209,13 +217,16 @@ button {
 
 .nav {
   position: fixed;
-  bottom: 0;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
-  max-width: 460px;
+  max-width: 440px;
   background: #8cc7c3;
   display: flex;
   justify-content: space-around;
   padding: 12px;
   font-weight: bold;
   z-index: 100;
+  border-radius: 20px;
 }
