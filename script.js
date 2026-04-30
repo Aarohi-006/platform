@@ -19,7 +19,7 @@ const arenaChannels = {
 
 const floors = {
   uc: ["6 Quiet Study", "5 Study Lounge", "4 Classrooms", "3 Lounge", "2 Cafeteria", "1 Lobby"],
-  parsons: ["12 Studios", "11 Studio", "10 Crit", "9 Studios", "8 Classrooms", "7 Classrooms", "6 Studios", "5 Studios", "4 Classrooms", "3 Classrooms", "2 Making Center", "1 Gallery", "B Printshop"],
+  parsons: ["12 Studios", "11 Studio", "10 Critique", "9 Studios", "8 Classrooms", "7 Classrooms", "6 Studios", "5 Studios", "4 Classrooms", "3 Classrooms", "2 Making Center", "1 Gallery", "B Printshop"],
   lang: ["9 Classrooms", "8 Classrooms", "7 Quiet Study", "6 Classrooms", "5 Wollman Hall", "4 Group Study", "3 Classrooms", "1 Auditorium / Cafe / Lobby"],
   nssr: ["11 Wolff Conference Room", "10 Seminar Rooms", "9 Graduate Study", "8 Classrooms", "7 Lecture Rooms", "6 Classrooms", "5 Lecture Rooms", "4 Seminar Rooms", "3 Reading Rooms", "2 Lecture Rooms", "1 Lobby"],
   copa: ["151 Bank Street — 3 Black Box Theatre", "151 Bank Street — 2 MFA Studio", "151 Bank Street — 1 MFA Studio", "55 W 13th — 9 Drama Studios", "Mannes / Jazz / Drama"]
