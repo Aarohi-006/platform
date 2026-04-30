@@ -10,9 +10,10 @@ body {
 .app {
   max-width: 420px;
   margin: auto;
-  min-height: 100vh;
+  height: 100vh;
   background: #f5f0dc;
-  padding-bottom: 90px;
+  padding-bottom: 82px;
+  overflow: hidden;
 }
 
 .header {
@@ -57,10 +58,10 @@ body {
 
 .map {
   position: relative;
-  height: 720px;
+  height: 560px;
   margin: 0 14px;
   border-radius: 22px;
-  background: url('map.png') center top / cover no-repeat;
+  background: url('map.png') center top / contain no-repeat;
   background-color: #efefef;
   overflow: hidden;
 }
@@ -92,7 +93,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  padding: 14px;
+  padding: 10px 14px 0;
   overflow: visible;
 }
 
@@ -217,7 +218,7 @@ button {
   background: #8cc7c3;
   display: flex;
   justify-content: space-around;
-  padding: 14px;
+  padding: 12px;
   font-weight: bold;
   z-index: 100;
 }
