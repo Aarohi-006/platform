@@ -2,8 +2,9 @@
 console.log("script loaded");
 
 let tips = [
-  { tip: "Quiet study – Lang", school: "lang", time: "2:10 PM" },
-  { tip: "Free pizza – UC", school: "uc", time: "3:15 PM" }
+  { tip: "Free pizza on 2 – UC", school: "uc", time: "3:15 PM" },
+  { tip: "Quiet seats open – Lang 7", school: "lang", time: "2:10 PM" },
+  { tip: "Printshop line 15 min – Parsons", school: "parsons", time: "1:45 PM" }
 ];
 
 let currentFilter = "all";
