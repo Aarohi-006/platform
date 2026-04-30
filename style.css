@@ -185,6 +185,8 @@ body {
   font-weight: bold;
 }
 
+/* Replace only .modal in style.css */
+
 .modal {
   position: fixed;
   bottom: -100%;
@@ -193,7 +195,7 @@ body {
   width: 100%;
   max-width: 460px;
   background: white;
-  padding: 20px;
+  padding: 20px 20px 110px; /* extra bottom space so button clears nav */
   transition: 0.3s;
   border-radius: 16px 16px 0 0;
   z-index: 99;
