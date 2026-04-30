@@ -60,7 +60,7 @@ body {
   height: 720px;
   margin: 0 14px;
   border-radius: 22px;
-  background: url('map.png') center top / contain no-repeat;
+  background: url('map.png') center top / cover no-repeat;
   background-color: #efefef;
   overflow: hidden;
 }
