@@ -1,10 +1,7 @@
-// script.js
-console.log("script loaded");
-
 let tips = [
-  { tip: "Free pizza on 2 – UC", school: "uc", time: "3:15 PM" },
-  { tip: "Quiet seats open – Lang 7", school: "lang", time: "2:10 PM" },
-  { tip: "Printshop line 15 min – Parsons", school: "parsons", time: "1:45 PM" }
+  { tip: "Free pizza on 2 – UC", school: "uc", floor: "2", time: "3:15 PM" },
+  { tip: "Quiet seats open – Lang 7", school: "lang", floor: "7", time: "2:10 PM" },
+  { tip: "Printshop line 15 min – Parsons", school: "parsons", floor: "B", time: "1:45 PM" }
 ];
 
 let currentFilter = "all";
@@ -22,50 +19,45 @@ const floors = {
   parsons: ["12 Studios", "11 Studio", "10 Crit", "9 Studios", "8 Classrooms", "7 Classrooms", "6 Studios", "5 Studios", "4 Classrooms", "3 Classrooms", "2 Making Center", "1 Gallery", "B Printshop"],
   lang: ["9 Classrooms", "8 Classrooms", "7 Quiet Study", "6 Classrooms", "5 Wollman Hall", "4 Group Study", "3 Classrooms", "1 Auditorium / Cafe / Lobby"],
   nssr: ["11 Wolff Conference Room", "10 Seminar Rooms", "9 Graduate Study", "8 Classrooms", "7 Lecture Rooms", "6 Classrooms", "5 Lecture Rooms", "4 Seminar Rooms", "3 Reading Rooms", "2 Lecture Rooms", "1 Lobby"],
-  copa: ["151 Bank Street — 3 Black Box Theatre", "151 Bank Street — 2 MFA Studio", "151 Bank Street — 1 MFA Studio", "55 W 13th — 9 Drama Studios", "Mannes / Jazz / Drama"]
+  copa: ["3 Black Box Theatre", "2 MFA Studio", "1 MFA Studio"]
 };
 
 function getPosition(school) {
-  return {
+  const positions = {
     copa: { top: 90, left: 35 },
     lang: { top: 90, left: 290 },
     uc: { top: 280, left: 170 },
     nssr: { top: 455, left: 35 },
     parsons: { top: 455, left: 270 }
-  }[school];
+  };
+  return positions[school];
 }
 
 function renderTips() {
   const container = document.getElementById("tips-container");
   const feed = document.getElementById("feed-list");
-  if (!container || !feed) return;
 
   container.innerHTML = "";
   feed.innerHTML = "";
 
   const stackCount = { uc: 0, lang: 0, parsons: 0, nssr: 0, copa: 0 };
 
-  tips.forEach(t => {
-    if (currentFilter !== "all" && t.school !== currentFilter) return;
+  tips.forEach(function(item) {
+    if (currentFilter !== "all" && item.school !== currentFilter) return;
 
-    const pos = getPosition(t.school);
+    const pos = getPosition(item.school);
 
-    if (pos) {
-      const div = document.createElement("div");
-      div.className = "tip";
-      div.textContent = t.tip;
+    const tipEl = document.createElement("div");
+    tipEl.className = "tip";
+    tipEl.textContent = item.tip;
+    tipEl.style.top = pos.top + stackCount[item.school] * 38 + "px";
+    tipEl.style.left = pos.left + "px";
+    stackCount[item.school]++;
+    container.appendChild(tipEl);
 
-      const offset = stackCount[t.school] * 38;
-      div.style.top = `${pos.top + offset}px`;
-      div.style.left = `${pos.left}px`;
-
-      stackCount[t.school]++;
-      container.appendChild(div);
-    }
-
-    const p = document.createElement("p");
-    p.textContent = `${t.tip} (${t.time})`;
-    feed.appendChild(p);
+    const feedEl = document.createElement("p");
+    feedEl.textContent = item.tip + " — Floor " + item.floor + " (" + item.time + ")";
+    feed.appendChild(feedEl);
   });
 }
 
@@ -73,46 +65,69 @@ function filterTips(school) {
   currentFilter = school;
 
   const bubble = document.querySelector(".bubble");
-  if (bubble) {
-    const messages = {
-      all: "Tap a building to explore live campus notes.",
-      uc: "Live updates around UC.",
-      parsons: "Studios, labs, and print access.",
-      lang: "Quiet study and lecture notes.",
-      nssr: "Seminars and reading spaces.",
-      copa: "Performance and rehearsal updates."
-    };
+  const messages = {
+    all: "Tap a building to explore live campus notes.",
+    uc: "Live updates around UC.",
+    parsons: "Studios, labs, and print access.",
+    lang: "Quiet study and lecture notes.",
+    nssr: "Seminars and reading spaces.",
+    copa: "Performance and rehearsal updates."
+  };
 
-    bubble.textContent = messages[school] || messages.all;
-  }
-
+  bubble.textContent = messages[school];
   renderTips();
 }
 
 function openBuilding(building) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  const screens = document.querySelectorAll(".screen");
+  screens.forEach(function(screen) {
+    screen.classList.remove("active");
+  });
+
   document.getElementById("buildingScreen").classList.add("active");
 
   const title = document.getElementById("buildingTitle");
   title.className = "building-title title-" + building;
-  title.innerText = building.toUpperCase();
+  title.textContent = building.toUpperCase();
 
   const floorList = document.getElementById("floorList");
   floorList.innerHTML = "";
 
-  floors[building].forEach(f => {
-    const div = document.createElement("div");
-    div.className = "floor " + building;
-    div.innerText = f;
-    floorList.appendChild(div);
+  const activeFloors = tips
+    .filter(function(item) {
+      return item.school === building;
+    })
+    .map(function(item) {
+      return item.floor;
+    });
+
+  floors[building].forEach(function(floor) {
+    const floorCard = document.createElement("div");
+    floorCard.className = "floor " + building;
+
+    const floorNumber = floor.split(" ")[0];
+    if (activeFloors.includes(floorNumber)) {
+      floorCard.classList.add("active-tip");
+    }
+
+    floorCard.textContent = floor;
+    floorList.appendChild(floorCard);
   });
 
-  const bubble = document.querySelector(".bubble");
-  if (bubble) {
-    bubble.textContent = "Scroll floors to check what’s active.";
-  }
-
   loadArena(building);
+}
+
+function updateFloorOptions() {
+  const school = document.getElementById("tipSchool").value;
+  const floorSelect = document.getElementById("tipFloor");
+  floorSelect.innerHTML = "";
+
+  floors[school].forEach(function(floor) {
+    const option = document.createElement("option");
+    option.value = floor.split(" ")[0];
+    option.textContent = "Floor " + floor.split(" ")[0];
+    floorSelect.appendChild(option);
+  });
 }
 
 async function loadArena(building) {
@@ -121,88 +136,62 @@ async function loadArena(building) {
 
   try {
     const response = await fetch(arenaChannels[building]);
-    const result = await response.json();
-    const items = result.contents || result.items || result.data || [];
+    const data = await response.json();
+    const items = data.contents || [];
 
     container.innerHTML = "";
 
-    items.slice(0, 5).forEach(block => {
+    items.slice(0, 5).forEach(function(block) {
       const card = document.createElement("div");
       card.className = "arena-card";
 
-      const imageUrl =
-        block.image?.display?.url ||
-        block.image?.original?.url ||
-        block.attachment?.url;
-
-      if (imageUrl) {
+      if (block.image && block.image.display) {
         const img = document.createElement("img");
-        img.src = imageUrl;
+        img.src = block.image.display.url;
         card.appendChild(img);
-      }
-
-      if (block.embed?.url) {
-        const iframe = document.createElement("iframe");
-        iframe.src = block.embed.url;
-        iframe.height = "200";
-        card.appendChild(iframe);
       }
 
       const title = document.createElement("div");
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
-      title.innerText = block.title || block.generated_title || block.source?.title || "Untitled";
+      title.textContent = block.title || "Untitled";
       card.appendChild(title);
 
       if (block.content) {
         const text = document.createElement("p");
-        text.innerText = block.content;
+        text.textContent = block.content;
         card.appendChild(text);
-      }
-
-      const linkUrl =
-        block.source?.url ||
-        block.url ||
-        block.source?.source?.url ||
-        block.embed?.url;
-
-      if (linkUrl) {
-        const link = document.createElement("a");
-        link.href = linkUrl;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.innerText = "Open Link";
-        card.appendChild(link);
       }
 
       container.appendChild(card);
     });
   } catch (error) {
     container.innerHTML = "<div class='arena-card'>No references available.</div>";
-    console.error(error);
   }
 }
 
 function showHome() {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach(function(screen) {
+    screen.classList.remove("active");
+  });
+
   document.getElementById("homeScreen").classList.add("active");
-
-  const bubble = document.querySelector(".bubble");
-  if (bubble) {
-    bubble.textContent = "Tap a building to explore live campus notes.";
-  }
-
+  document.querySelector(".bubble").textContent = "Tap a building to explore live campus notes.";
   renderTips();
 }
 
 function showFeed() {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach(function(screen) {
+    screen.classList.remove("active");
+  });
+
   document.getElementById("feedScreen").classList.add("active");
   renderTips();
 }
 
 function openModal() {
   document.getElementById("modal").classList.add("active");
+  updateFloorOptions();
 }
 
 function closeModal() {
@@ -212,12 +201,14 @@ function closeModal() {
 function addTip() {
   const text = document.getElementById("tipText").value.trim();
   const school = document.getElementById("tipSchool").value;
+  const floor = document.getElementById("tipFloor").value;
 
   if (!text) return;
 
   tips.unshift({
     tip: text,
-    school,
+    school: school,
+    floor: floor,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   });
 
