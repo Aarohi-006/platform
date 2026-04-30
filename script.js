@@ -41,6 +41,14 @@ function renderTips() {
   container.innerHTML = "";
   feed.innerHTML = "";
 
+  const stackCount = {
+    uc: 0,
+    lang: 0,
+    parsons: 0,
+    nssr: 0,
+    copa: 0
+  };
+
   tips.forEach(t => {
     if (currentFilter !== "all" && t.school !== currentFilter) return;
 
@@ -49,8 +57,12 @@ function renderTips() {
       const div = document.createElement("div");
       div.className = "tip";
       div.innerText = t.tip;
-      div.style.top = pos.top + "px";
+
+      const offset = stackCount[t.school] * 34;
+      div.style.top = (pos.top + offset) + "px";
       div.style.left = pos.left + "px";
+
+      stackCount[t.school]++;
       container.appendChild(div);
     }
 
@@ -171,7 +183,7 @@ function addTip() {
   const school = document.getElementById("tipSchool").value;
   if (!text) return;
 
-  tips.push({
+  tips.unshift({
     tip: text,
     school,
     time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
