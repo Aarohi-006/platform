@@ -151,6 +151,17 @@ async function loadArena(building) {
         card.appendChild(img);
       }
 
+      if (block.embed && block.embed.url) {
+        const frame = document.createElement("iframe");
+        frame.src = block.embed.url;
+        frame.width = "100%";
+        frame.height = "200";
+        frame.style.border = "none";
+        frame.style.borderRadius = "10px";
+        frame.style.marginBottom = "8px";
+        card.appendChild(frame);
+      }
+
       const title = document.createElement("div");
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
@@ -161,6 +172,19 @@ async function loadArena(building) {
         const text = document.createElement("p");
         text.textContent = block.content;
         card.appendChild(text);
+      }
+
+      const linkUrl = block.source?.url || block.url;
+
+      if (linkUrl) {
+        const link = document.createElement("a");
+        link.href = linkUrl;
+        link.target = "_blank";
+        link.textContent = "Open Link";
+        link.style.display = "block";
+        link.style.marginTop = "8px";
+        link.style.fontWeight = "bold";
+        card.appendChild(link);
       }
 
       container.appendChild(card);
