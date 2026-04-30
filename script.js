@@ -1,16 +1,6 @@
 // script.js
 console.log("script loaded");
 
-window.addEventListener("load", () => {
-  const cursorTargets = document.querySelectorAll(
-    "html, body, .app, .map, .hotspot, .filter, button, a, input, select"
-  );
-
-  cursorTargets.forEach(el => {
-    el.style.cursor = 'url("./mascot.png") 18 18, auto';
-  });
-});
-
 let tips = [
   { tip: "Quiet study – Lang", school: "lang", time: "2:10 PM" },
   { tip: "Free pizza – UC", school: "uc", time: "3:15 PM" }
