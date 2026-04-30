@@ -160,12 +160,17 @@ async function loadArena(building) {
         card.appendChild(text);
       }
 
-      const linkUrl = block.source?.url || block.url;
+      const linkUrl =
+        block.source?.url ||
+        block.url ||
+        block.source?.source?.url ||
+        block.embed?.url;
 
       if (linkUrl) {
         const link = document.createElement("a");
         link.href = linkUrl;
         link.target = "_blank";
+        link.rel = "noopener noreferrer";
         link.innerText = "Open Link";
         card.appendChild(link);
       }
