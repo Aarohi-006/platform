@@ -7,11 +7,11 @@ let tips = [
 let currentFilter = "all";
 
 const arenaChannels = {
-  uc: "https://api.are.na/v3/channels/uc-npghtqxz8wi",
-  parsons: "https://api.are.na/v3/channels/parsons-vs1m3z46yw8",
-  lang: "https://api.are.na/v3/channels/lang-eps6ergks48",
-  nssr: "https://api.are.na/v3/channels/nssr-uvl_ripsnjg",
-  copa: "https://api.are.na/v3/channels/copa-1_xx1whfvcc"
+  uc: "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.are.na/v3/channels/uc-npghtqxz8wi/contents"),
+  parsons: "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.are.na/v3/channels/parsons-vs1m3z46yw8/contents"),
+  lang: "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.are.na/v3/channels/lang-eps6ergks48/contents"),
+  nssr: "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.are.na/v3/channels/nssr-uvl_ripsnjg/contents"),
+  copa: "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://api.are.na/v3/channels/copa-1_xx1whfvcc/contents")
 };
 
 const floors = {
