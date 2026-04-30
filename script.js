@@ -114,44 +114,42 @@ function openBuilding(building) {
     floorList.appendChild(floorCard);
   });
 
-  loadArena(building);
-}
-
-function updateFloorOptions() {
-  const school = document.getElementById("tipSchool").value;
-  const floorSelect = document.getElementById("tipFloor");
-  floorSelect.innerHTML = "";
-
-  floors[school].forEach(function(floor) {
-    const option = document.createElement("option");
-    option.value = floor.split(" ")[0];
-    option.textContent = "Floor " + floor.split(" ")[0];
-    floorSelect.appendChild(option);
-  });
-}
-
-async function loadArena(building) {
+ async function loadArena(building) {
   const container = document.getElementById("arena-content");
   container.innerHTML = "Loading references...";
 
   try {
     const response = await fetch(arenaChannels[building]);
     const data = await response.json();
-    const items = data.contents || [];
+
+    // Are.na can return blocks in different keys depending on endpoint
+    const items = data.contents || data.items || data.data || [];
 
     container.innerHTML = "";
+
+    if (!items.length) {
+      container.innerHTML = "<div class='arena-card'>No references available.</div>";
+      return;
+    }
 
     items.slice(0, 5).forEach(function(block) {
       const card = document.createElement("div");
       card.className = "arena-card";
 
-      if (block.image && block.image.display) {
+      // image
+      const imageUrl =
+        block.image?.display?.url ||
+        block.image?.original?.url ||
+        block.attachment?.url;
+
+      if (imageUrl) {
         const img = document.createElement("img");
-        img.src = block.image.display.url;
+        img.src = imageUrl;
         card.appendChild(img);
       }
 
-      if (block.embed && block.embed.url) {
+      // embed
+      if (block.embed?.url) {
         const frame = document.createElement("iframe");
         frame.src = block.embed.url;
         frame.width = "100%";
@@ -162,19 +160,29 @@ async function loadArena(building) {
         card.appendChild(frame);
       }
 
+      // title
       const title = document.createElement("div");
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
-      title.textContent = block.title || "Untitled";
+      title.textContent =
+        block.title ||
+        block.generated_title ||
+        block.source?.title ||
+        "Untitled";
       card.appendChild(title);
 
+      // text
       if (block.content) {
         const text = document.createElement("p");
         text.textContent = block.content;
         card.appendChild(text);
       }
 
-      const linkUrl = block.source?.url || block.url;
+      // links
+      const linkUrl =
+        block.source?.url ||
+        block.url ||
+        block.embed?.url;
 
       if (linkUrl) {
         const link = document.createElement("a");
@@ -191,6 +199,7 @@ async function loadArena(building) {
     });
   } catch (error) {
     container.innerHTML = "<div class='arena-card'>No references available.</div>";
+    console.error(error);
   }
 }
 
