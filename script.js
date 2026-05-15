@@ -1,31 +1,13 @@
 // script.js
 
-// starter tips that show up on the map
 let tips = [
-  {
-    tip: "Free pizza on 2 – UC",
-    school: "uc",
-    floor: "2",
-    time: "3:15 PM"
-  },
-  {
-    tip: "Quiet seats open – Lang 7",
-    school: "lang",
-    floor: "7",
-    time: "2:10 PM"
-  },
-  {
-    tip: "Printshop line 15 min – Parsons",
-    school: "parsons",
-    floor: "B",
-    time: "1:45 PM"
-  }
+  { tip: "Free pizza on 2 – UC", school: "uc", floor: "2", time: "3:15 PM" },
+  { tip: "Quiet seats open – Lang 7", school: "lang", floor: "7", time: "2:10 PM" },
+  { tip: "Printshop line 15 min – Parsons", school: "parsons", floor: "B", time: "1:45 PM" }
 ];
 
-// current filter state
 let currentFilter = "all";
 
-// are.na channels for each school
 const arenaChannels = {
   uc: "https://api.are.na/v3/channels/uc-npghtqxz8wi/contents",
   parsons: "https://api.are.na/v3/channels/parsons-vs1m3z46yw8/contents",
@@ -34,7 +16,6 @@ const arenaChannels = {
   copa: "https://api.are.na/v3/channels/copa-1_xx1whfvcc/contents"
 };
 
-// floor data
 const floors = {
   uc: ["6 Quiet Study", "5 Study Lounge", "4 Classrooms", "3 Lounge", "2 Cafeteria", "1 Lobby"],
   parsons: ["12 Studios", "11 Studio", "10 Crit", "9 Studios", "8 Classrooms", "7 Classrooms", "6 Studios", "5 Studios", "4 Classrooms", "3 Classrooms", "2 Making Center", "1 Gallery", "B Printshop"],
@@ -43,7 +24,6 @@ const floors = {
   copa: ["3 Black Box Theatre", "2 MFA Studio", "1 MFA Studio"]
 };
 
-// positions of buildings on screen
 function getPosition(school) {
   const positions = {
     copa: { top: 90, left: 35 },
@@ -52,23 +32,19 @@ function getPosition(school) {
     nssr: { top: 455, left: 35 },
     parsons: { top: 455, left: 270 }
   };
-
   return positions[school];
 }
 
-// render all tips on map + feed
 function renderTips() {
   const container = document.getElementById("tips-container");
   const feed = document.getElementById("feed-list");
 
-  if (!container || !feed) {
-    return;
-  }
+  if (!container || !feed) return;
 
   container.innerHTML = "";
   feed.innerHTML = "";
 
-  let stackCount = {
+  const stackCount = {
     uc: 0,
     lang: 0,
     parsons: 0,
@@ -77,43 +53,29 @@ function renderTips() {
   };
 
   tips.forEach(function(item) {
-    // skip if filtered
-    if (currentFilter !== "all" && item.school !== currentFilter) {
-      return;
-    }
+    if (currentFilter !== "all" && item.school !== currentFilter) return;
 
     const pos = getPosition(item.school);
+    if (!pos) return;
 
-    if (!pos) {
-      return;
-    }
-
-    // create tip bubble
     const tipEl = document.createElement("div");
     tipEl.className = "tip";
     tipEl.textContent = item.tip;
-
-    tipEl.style.top = pos.top + stackCount[item.school] * 38 + "px";
+    tipEl.style.top = (pos.top + stackCount[item.school] * 38) + "px";
     tipEl.style.left = pos.left + "px";
-
     stackCount[item.school]++;
-
     container.appendChild(tipEl);
 
-    // add to feed section
     const feedEl = document.createElement("p");
     feedEl.textContent = item.tip + " — Floor " + item.floor + " (" + item.time + ")";
-
     feed.appendChild(feedEl);
   });
 }
 
-// filter map by school
 function filterTips(school) {
   currentFilter = school;
 
   const bubble = document.querySelector(".bubble");
-
   const messages = {
     all: "Tap a building to explore live campus notes.",
     uc: "Live updates around UC.",
@@ -130,7 +92,6 @@ function filterTips(school) {
   renderTips();
 }
 
-// open a building page
 function openBuilding(building) {
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
@@ -145,7 +106,6 @@ function openBuilding(building) {
   const floorList = document.getElementById("floorList");
   floorList.innerHTML = "";
 
-  // check which floors currently have tips
   const activeFloors = tips
     .filter(function(item) {
       return item.school === building;
@@ -159,7 +119,6 @@ function openBuilding(building) {
     floorCard.className = "floor " + building;
 
     const floorNumber = floor.split(" ")[0];
-
     if (activeFloors.includes(floorNumber)) {
       floorCard.classList.add("active-tip");
     }
@@ -171,14 +130,11 @@ function openBuilding(building) {
   loadArena(building);
 }
 
-// update floor dropdown in modal
 function updateFloorOptions() {
   const school = document.getElementById("tipSchool").value;
   const floorSelect = document.getElementById("tipFloor");
 
-  if (!floorSelect) {
-    return;
-  }
+  if (!floorSelect) return;
 
   floorSelect.innerHTML = "";
 
@@ -188,18 +144,13 @@ function updateFloorOptions() {
     const option = document.createElement("option");
     option.value = floorNum;
     option.textContent = "Floor " + floorNum;
-
     floorSelect.appendChild(option);
   });
 }
 
-// load references from are.na
 async function loadArena(building) {
   const container = document.getElementById("arena-content");
-
-  if (!container) {
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "<div class='arena-card'>Loading references...</div>";
 
@@ -207,11 +158,10 @@ async function loadArena(building) {
     const response = await fetch(arenaChannels[building]);
     const data = await response.json();
 
-    const items = data.contents || [];
-
+    const items = data.contents || data.items || data.data || [];
     container.innerHTML = "";
 
-    if (items.length === 0) {
+    if (!items.length) {
       container.innerHTML = "<div class='arena-card'>No references available.</div>";
       return;
     }
@@ -220,33 +170,64 @@ async function loadArena(building) {
       const card = document.createElement("div");
       card.className = "arena-card";
 
-      // image
       const imageUrl =
         (block.image && block.image.display && block.image.display.url) ||
-        (block.image && block.image.original && block.image.original.url);
+        (block.image && block.image.original && block.image.original.url) ||
+        (block.attachment && block.attachment.url);
 
       if (imageUrl) {
         const img = document.createElement("img");
         img.src = imageUrl;
-        img.alt = block.title || "image";
-
+        img.alt = block.title || "Are.na image";
         card.appendChild(img);
       }
 
-      // title
+      if (block.embed && block.embed.url) {
+        const frame = document.createElement("iframe");
+        frame.src = block.embed.url;
+        frame.width = "100%";
+        frame.height = "200";
+        frame.style.border = "none";
+        frame.style.borderRadius = "10px";
+        frame.style.marginBottom = "8px";
+        card.appendChild(frame);
+      }
+
       const title = document.createElement("div");
-      title.textContent = block.title || "Untitled";
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
-
+      title.textContent =
+        block.title ||
+        block.generated_title ||
+        (block.source && block.source.title) ||
+        "Untitled";
       card.appendChild(title);
 
-      // text
-      if (block.content) {
-        const text = document.createElement("p");
-        text.textContent = block.content;
+      const textContent =
+        block.content ||
+        (block.description && block.description.plain) ||
+        "";
 
+      if (textContent) {
+        const text = document.createElement("p");
+        text.textContent = textContent;
         card.appendChild(text);
+      }
+
+      const linkUrl =
+        (block.source && block.source.url) ||
+        block.url;
+
+      if (linkUrl) {
+        const link = document.createElement("a");
+        link.href = linkUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Open Link";
+        link.style.display = "block";
+        link.style.marginTop = "8px";
+        link.style.fontWeight = "bold";
+        card.appendChild(link);
       }
 
       container.appendChild(card);
@@ -257,7 +238,6 @@ async function loadArena(building) {
   }
 }
 
-// show home screen
 function showHome() {
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
@@ -265,41 +245,38 @@ function showHome() {
 
   document.getElementById("homeScreen").classList.add("active");
 
+  const bubble = document.querySelector(".bubble");
+  if (bubble) {
+    bubble.textContent = "Tap a building to explore live campus notes.";
+  }
+
   renderTips();
 }
 
-// open feed page
 function showFeed() {
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
   });
 
   document.getElementById("feedScreen").classList.add("active");
-
   renderTips();
 }
 
-// open modal
 function openModal() {
   document.getElementById("modal").classList.add("active");
-
   updateFloorOptions();
 }
 
-// close modal
 function closeModal() {
   document.getElementById("modal").classList.remove("active");
 }
 
-// add a new tip
 function addTip() {
   const text = document.getElementById("tipText").value.trim();
   const school = document.getElementById("tipSchool").value;
   const floor = document.getElementById("tipFloor").value;
 
-  if (!text) {
-    return;
-  }
+  if (!text) return;
 
   tips.unshift({
     tip: text,
@@ -312,15 +289,11 @@ function addTip() {
   });
 
   document.getElementById("tipText").value = "";
-
   closeModal();
   showHome();
 }
 
-// load page
 window.onload = function() {
   updateFloorOptions();
   renderTips();
 };
-```
-
