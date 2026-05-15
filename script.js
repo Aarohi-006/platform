@@ -32,7 +32,6 @@ function getPosition(school) {
     nssr: { top: 455, left: 35 },
     parsons: { top: 455, left: 270 }
   };
-
   return positions[school];
 }
 
@@ -54,40 +53,29 @@ function renderTips() {
   };
 
   tips.forEach(function(item) {
-
-    if (currentFilter !== "all" && item.school !== currentFilter) {
-      return;
-    }
+    if (currentFilter !== "all" && item.school !== currentFilter) return;
 
     const pos = getPosition(item.school);
-
     if (!pos) return;
 
     const tipEl = document.createElement("div");
     tipEl.className = "tip";
     tipEl.textContent = item.tip;
-
     tipEl.style.top = (pos.top + stackCount[item.school] * 38) + "px";
     tipEl.style.left = pos.left + "px";
-
     stackCount[item.school]++;
-
     container.appendChild(tipEl);
 
     const feedEl = document.createElement("p");
-    feedEl.textContent =
-      item.tip + " — Floor " + item.floor + " (" + item.time + ")";
-
+    feedEl.textContent = item.tip + " — Floor " + item.floor + " (" + item.time + ")";
     feed.appendChild(feedEl);
   });
 }
 
 function filterTips(school) {
-
   currentFilter = school;
 
   const bubble = document.querySelector(".bubble");
-
   const messages = {
     all: "Tap a building to explore live campus notes.",
     uc: "Live updates around UC.",
@@ -105,7 +93,6 @@ function filterTips(school) {
 }
 
 function openBuilding(building) {
-
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
   });
@@ -113,12 +100,10 @@ function openBuilding(building) {
   document.getElementById("buildingScreen").classList.add("active");
 
   const title = document.getElementById("buildingTitle");
-
   title.className = "building-title title-" + building;
   title.textContent = building.toUpperCase();
 
   const floorList = document.getElementById("floorList");
-
   floorList.innerHTML = "";
 
   const activeFloors = tips
@@ -130,19 +115,15 @@ function openBuilding(building) {
     });
 
   floors[building].forEach(function(floor) {
-
     const floorCard = document.createElement("div");
-
     floorCard.className = "floor " + building;
 
     const floorNumber = floor.split(" ")[0];
-
     if (activeFloors.includes(floorNumber)) {
       floorCard.classList.add("active-tip");
     }
 
     floorCard.textContent = floor;
-
     floorList.appendChild(floorCard);
   });
 
@@ -150,7 +131,6 @@ function openBuilding(building) {
 }
 
 function updateFloorOptions() {
-
   const school = document.getElementById("tipSchool").value;
   const floorSelect = document.getElementById("tipFloor");
 
@@ -159,138 +139,141 @@ function updateFloorOptions() {
   floorSelect.innerHTML = "";
 
   floors[school].forEach(function(floor) {
-
     const floorNum = floor.split(" ")[0];
 
     const option = document.createElement("option");
-
     option.value = floorNum;
     option.textContent = "Floor " + floorNum;
-
     floorSelect.appendChild(option);
   });
 }
 
 async function loadArena(building) {
-
   const container = document.getElementById("arena-content");
-
   if (!container) return;
 
-  container.innerHTML =
-    "<div class='arena-card'>Loading references...</div>";
+  container.innerHTML = "<div class='arena-card'>Loading references...</div>";
 
   try {
-
     const response = await fetch(arenaChannels[building]);
     const data = await response.json();
 
-    const items = data.contents || [];
-
+    const items = data.contents || data.items || data.data || [];
     container.innerHTML = "";
 
-    if (items.length === 0) {
-
-      container.innerHTML =
-        "<div class='arena-card'>No references available.</div>";
-
+    if (!items.length) {
+      container.innerHTML = "<div class='arena-card'>No references available.</div>";
       return;
     }
 
     items.slice(0, 5).forEach(function(block) {
-
       const card = document.createElement("div");
-
       card.className = "arena-card";
 
       const imageUrl =
-        (block.image &&
-          block.image.display &&
-          block.image.display.url) ||
-        (block.image &&
-          block.image.original &&
-          block.image.original.url);
+        (block.image && block.image.display && block.image.display.url) ||
+        (block.image && block.image.original && block.image.original.url) ||
+        (block.attachment && block.attachment.url);
 
       if (imageUrl) {
-
         const img = document.createElement("img");
-
         img.src = imageUrl;
-        img.alt = block.title || "image";
-
+        img.alt = block.title || "Are.na image";
         card.appendChild(img);
       }
 
+      if (block.embed && block.embed.url) {
+        const frame = document.createElement("iframe");
+        frame.src = block.embed.url;
+        frame.width = "100%";
+        frame.height = "200";
+        frame.style.border = "none";
+        frame.style.borderRadius = "10px";
+        frame.style.marginBottom = "8px";
+        card.appendChild(frame);
+      }
+
       const title = document.createElement("div");
-
-      title.textContent = block.title || "Untitled";
-
       title.style.fontWeight = "bold";
       title.style.marginBottom = "6px";
-
+      title.textContent =
+        block.title ||
+        block.generated_title ||
+        (block.source && block.source.title) ||
+        "Untitled";
       card.appendChild(title);
 
-      if (block.content) {
+      const textContent =
+        block.content ||
+        (block.description && block.description.plain) ||
+        "";
 
+      if (textContent) {
         const text = document.createElement("p");
-
-        text.textContent = block.content;
-
+        text.textContent = textContent;
         card.appendChild(text);
+      }
+
+      const linkUrl =
+        (block.source && block.source.url) ||
+        block.url;
+
+      if (linkUrl) {
+        const link = document.createElement("a");
+        link.href = linkUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Open Link";
+        link.style.display = "block";
+        link.style.marginTop = "8px";
+        link.style.fontWeight = "bold";
+        card.appendChild(link);
       }
 
       container.appendChild(card);
     });
-
   } catch (error) {
-
-    container.innerHTML =
-      "<div class='arena-card'>No references available.</div>";
-
+    container.innerHTML = "<div class='arena-card'>No references available.</div>";
     console.log(error);
   }
 }
 
 function showHome() {
-
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
   });
 
   document.getElementById("homeScreen").classList.add("active");
 
+  const bubble = document.querySelector(".bubble");
+  if (bubble) {
+    bubble.textContent = "Tap a building to explore live campus notes.";
+  }
+
   renderTips();
 }
 
 function showFeed() {
-
   document.querySelectorAll(".screen").forEach(function(screen) {
     screen.classList.remove("active");
   });
 
   document.getElementById("feedScreen").classList.add("active");
-
   renderTips();
 }
 
 function openModal() {
-
   document.getElementById("modal").classList.add("active");
-
   updateFloorOptions();
 }
 
 function closeModal() {
-
   document.getElementById("modal").classList.remove("active");
 }
 
 function addTip() {
-
   const text = document.getElementById("tipText").value.trim();
-
   const school = document.getElementById("tipSchool").value;
-
   const floor = document.getElementById("tipFloor").value;
 
   if (!text) return;
@@ -306,15 +289,11 @@ function addTip() {
   });
 
   document.getElementById("tipText").value = "";
-
   closeModal();
-
   showHome();
 }
 
 window.onload = function() {
-
   updateFloorOptions();
-
   renderTips();
 };
